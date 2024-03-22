@@ -8,8 +8,6 @@ on:
 jobs:
   publish:
     name: Publish
-    needs:
-      - integration
     runs-on: ubuntu-latest
     permissions:
       contents: write
