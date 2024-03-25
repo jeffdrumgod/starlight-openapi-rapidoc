@@ -44,21 +44,41 @@ export const SchemaConfigSchema = z.object({
    * Number of times to repeat the circular reference in the content
    */
   numberOfRepeatCircular: z.number().optional(),
+
+  /**
+   * Badge to be shown in the sidebar
+   */
+  badge: z
+    .string()
+    .optional()
+    .or(
+      z
+        .object({
+          text: z.string(),
+          variant: z.enum(['note', 'danger', 'success', 'caution', 'tip', 'default']),
+        })
+        .optional(),
+    ),
 })
 
 export function getSchemaSidebarGroups(schema: Schema): SidebarManualGroup {
   const { config, document } = schema
+  const { badge, ...cleanedConfig } = config
 
-  return makeSidebarGroup(
-    config.label ?? document.info.title,
-    [
+  const cleanedSchema = {
+    ...schema,
+    config: cleanedConfig,
+  }
+
+  return makeSidebarGroup({
+    ...config,
+    items: [
       makeSidebarLink('Overview', getBaseLink(config)),
-      ...getPathItemSidebarGroups(schema),
-      ...getWebhooksSidebarGroups(schema),
+      ...getPathItemSidebarGroups(cleanedSchema),
+      ...getWebhooksSidebarGroups(cleanedSchema),
     ],
-    config.collapsed,
-    config.group,
-  )
+    label: config.label ?? document.info.title,
+  })
 }
 
 export type StarlightOpenAPISchemaConfig = z.infer<typeof SchemaConfigSchema>

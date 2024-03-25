@@ -125,13 +125,10 @@ export function getSidebarFromSchemas(
   })
 }
 
-export function makeSidebarGroup(
-  label: string,
-  items: SidebarManualGroup['items'],
-  collapsed: boolean,
-  group?: SidebarManualGroup['group'],
-): SidebarManualGroup {
-  return { collapsed, items, label, group }
+export function makeSidebarGroup(groupConfig: SidebarManualGroup): SidebarManualGroup {
+  const { label, items, collapsed = true, group, badge } = groupConfig
+
+  return { collapsed, items, label, group, badge }
 }
 
 export const chooseBadgeVariant = (method: string) => {
@@ -161,7 +158,7 @@ export function makeSidebarLink(label: string, link: string): SidebarLink {
 
 export function makeSidebarLinkFromPathOperation(
   operation: PathItemOperation,
-  config: { baseLink: string; showMethodBadgeSidebar: boolean | undefined },
+  config: { baseLink: string; showMethodBadgeSidebar?: boolean | undefined },
 ): SidebarLink {
   const { slug, title, method } = operation
   const { baseLink = '', showMethodBadgeSidebar = false } = config
@@ -266,10 +263,14 @@ type SidebarGroup =
     }
 
 export interface SidebarManualGroup {
-  collapsed?: boolean
+  collapsed?: boolean | undefined
   items: (SidebarLink | SidebarGroup)[]
   label: string
   group?: symbol | undefined
+  badge?:
+    | string
+    | { text: string; variant?: 'note' | 'danger' | 'success' | 'caution' | 'tip' | 'default' | undefined }
+    | undefined
 }
 
 interface SidebarLink {
