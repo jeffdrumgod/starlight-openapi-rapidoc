@@ -29,6 +29,7 @@ export default defineConfig({
             rapidocAttrs: {
               theme: 'dark',
             },
+            badge: 'The Badge',
           },
           {
             base: 'api/1password',
